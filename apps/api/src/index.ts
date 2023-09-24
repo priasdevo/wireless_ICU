@@ -3,11 +3,15 @@ import http from 'http'
 import cors from 'cors'
 import { Server } from 'socket.io'
 import streamSocket from './sockets/streamSocket'
+import connectDB from './database/db'
+import dotenv from 'dotenv'
 
 const SocketIO = require('socket.io')
 
-import { config } from 'dotenv'
+dotenv.config()
+connectDB()
 
+const PORT = process.env.PORT || 3000
 const app = express()
 
 app.use(express.json())
@@ -26,24 +30,11 @@ const io: Server = SocketIO(server, {
 
 streamSocket(io)
 
-const PORT = process.env.PORT || 3000
 server.listen(PORT, () => {
   console.log('Server running in', process.env.NOED_ENV, ' mode on port ', PORT)
 })
 
-//Handle promise rejection
-process.on('unhandledRejection', (err: Error, Promise) => {
+process.on('unhandledRejection', (err: Error, promise) => {
   console.log(`Error: ${err.message}`)
-  // close server
   server.close(() => process.exit(1))
 })
-
-// // Function to broadcast data to all connected clients
-// function broadcast(data: string, sender: WebSocket) {
-//   clients.forEach((client: WebSocket) => {
-//     // Send the data to all clients except the sender
-//     if (client !== sender && client.readyState === WebSocket.OPEN) {
-//       client.send(data)
-//     }
-//   })
-// }
