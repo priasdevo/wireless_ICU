@@ -5,10 +5,14 @@ import { Server } from 'socket.io'
 import streamSocket from './sockets/streamSocket'
 import connectDB from './database/db'
 import dotenv from 'dotenv'
+import path from 'path'
+
+import authRoutes from './routes/auth'
+import deviceRoutes from './routes/deviceRoutes'
 
 const SocketIO = require('socket.io')
+dotenv.config({ path: path.resolve(__dirname, './config/.env') })
 
-dotenv.config()
 connectDB()
 
 const PORT = process.env.PORT || 3000
@@ -16,6 +20,9 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
+
+app.use('/auth', authRoutes)
+app.use('/authDevice', deviceRoutes)
 
 const server = http.createServer(app)
 
