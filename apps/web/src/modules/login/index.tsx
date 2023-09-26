@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import { Button, Input, InputGroup, Label, LoginContainer } from './styled'
+import useLogin from './hooks/useLogin'
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const { username, setUsername, password, setPassword, login } = useLogin()
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    // if (onLogin) {
-    //   onLogin(username, password)
-    // }
+    login()
   }
 
   return (
