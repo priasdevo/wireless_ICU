@@ -9,7 +9,7 @@ import { Request, Response } from 'express'
 
 export const registerDevice = async (req: Request, res: Response) => {
   try {
-    const { macAddress, users, password, useToken } = req.body
+    const { macAddress, password, useToken } = req.body
 
     let device = await Device.findOne({ macAddress })
 
@@ -29,7 +29,6 @@ export const registerDevice = async (req: Request, res: Response) => {
 
     device = new Device({
       macAddress,
-      users,
       password: hashedPassword,
       token,
     })

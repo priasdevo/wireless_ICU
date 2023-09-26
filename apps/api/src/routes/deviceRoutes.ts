@@ -1,11 +1,15 @@
 // routes/deviceRoutes.ts
 import express from 'express'
-import * as authController from '../controllers/deviceController'
+import * as deviceController from '../controllers/deviceController'
 
 const router = express.Router()
 import { validateMacAddress } from '../middleware/validateMacAddress'
 
-router.post('/register', validateMacAddress, registerDevice)
-router.post('/authenticate', validateMacAddress, authenticateDevice)
+router.post('/register', validateMacAddress, deviceController.registerDevice)
+router.post(
+  '/authenticate',
+  validateMacAddress,
+  deviceController.authenticateDevice,
+)
 
 export default router

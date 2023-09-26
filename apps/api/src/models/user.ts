@@ -5,6 +5,13 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   nickname: { type: String, required: true },
+  device: [
+    {
+      // Array of device IDs
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Device',
+    },
+  ],
 })
 
 // Encrypt password before saving user

@@ -8,13 +8,6 @@ const deviceSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  users: [
-    {
-      // Array of user IDs
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-  ],
   password: {
     type: String,
     select: false, // This prevents the password from being returned in queries by default
