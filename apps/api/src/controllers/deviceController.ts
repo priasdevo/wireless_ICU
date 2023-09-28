@@ -95,8 +95,8 @@ export const authenticateDevice = async (req: Request, res: Response) => {
 
 export const addDeviceToUser = async (req: IRequestWithUser, res: Response) => {
   try {
-    // 1. Look up the Device using the device_code
-    const device = await Device.findOne({ device_code: req.body.device_code })
+    // 1. Look up the Device using the deviceCode
+    const device = await Device.findOne({ deviceCode: req.body.deviceCode })
 
     if (!device) {
       return res.status(404).json({ msg: 'Device not found' })
@@ -125,8 +125,8 @@ export const addDeviceToUser = async (req: IRequestWithUser, res: Response) => {
 
 export const removeDevice = async (req: IRequestWithUser, res: Response) => {
   try {
-    // 1. Look up the Device using the device_code
-    const device = await Device.findOne({ device_code: req.body.device_code })
+    // 1. Look up the Device using the deviceCode
+    const device = await Device.findOne({ deviceCode: req.body.deviceCode })
 
     if (!device) {
       return res.status(404).json({ msg: 'Device not found' })

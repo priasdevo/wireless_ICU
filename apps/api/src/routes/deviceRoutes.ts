@@ -14,7 +14,7 @@ router.post(
 )
 
 router.post('/add', authMiddleware, deviceController.addDeviceToUser)
-router.post('/remove', authMiddleware, deviceController.removeDevice)
+router.delete('/remove', authMiddleware, deviceController.removeDevice)
 router.get('/', authMiddleware, deviceController.getUserDevices)
 
 export default router

@@ -13,7 +13,7 @@ const deviceSchema = new mongoose.Schema({
     select: false, // This prevents the password from being returned in queries by default
   },
   token: String,
-  device_code: {
+  deviceCode: {
     type: String,
     unique: true,
   },
@@ -22,12 +22,9 @@ const deviceSchema = new mongoose.Schema({
 deviceSchema.pre('save', function (next) {
   const doc = this as any
 
-  console.log(doc)
-
-  if (!doc.device_code) {
+  if (!doc.deviceCode) {
     // Here we're generating a 6-character random hash for device_code.
-    doc.device_code = crypto.randomBytes(3).toString('hex')
-    console.log(doc)
+    doc.deviceCode = crypto.randomBytes(3).toString('hex')
   }
 
   next()

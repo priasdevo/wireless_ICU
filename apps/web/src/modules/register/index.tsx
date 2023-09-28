@@ -1,17 +1,25 @@
 import React, { useState } from 'react'
 import { RegisterContainer, InputGroup, Label, Input, Button } from './styled'
+import useRegister from './hooks/useRegister'
 
 interface RegisterProps {
   onRegister?: (username: string, password: string, email: string) => void
 }
 
 const RegisterPage = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [email, setEmail] = useState('')
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    nickname,
+    setNickname,
+    register,
+  } = useRegister()
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault()
+    register()
     // if (onRegister) {
     //   onRegister(username, password, email)
     // }
@@ -31,12 +39,12 @@ const RegisterPage = () => {
           />
         </InputGroup>
         <InputGroup>
-          <Label htmlFor="email">Email:</Label>
+          <Label htmlFor="nickname">Nickname:</Label>
           <Input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="nickname"
+            id="nickname"
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
           />
         </InputGroup>
         <InputGroup>
