@@ -90,13 +90,24 @@ export const login = async (req: Request, res: Response) => {
       },
     }
 
+    const expiresIn = Number(5) * 24 * 60 * 60 * 1000
+    const options = {
+      expires: new Date(Date.now() + expiresIn),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+    }
+
     jwt.sign(
       payload,
       process.env.JWT_SECRET || 'secret',
       { expiresIn: process.env.JWT_EXPIRE || '1h' },
       (err, token) => {
         if (err) throw err
-        res.json({ token })
+        res.status(200).cookie('token', token, options).json({
+          success: true,
+          token,
+        })
+        //res.json({ token })
       },
     )
   } catch (err) {

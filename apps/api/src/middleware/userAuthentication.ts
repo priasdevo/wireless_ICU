@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
 interface IDecodedUser {
-  id: string
+  user: any
   iat?: number
   exp?: number
 }
@@ -15,7 +15,7 @@ export const authMiddleware = (
   next: NextFunction,
 ) => {
   // Get token from header
-  const token = req.header('Authorization')
+  const token = req.cookies.token
 
   // Check if token exists
   if (!token) {
@@ -28,7 +28,7 @@ export const authMiddleware = (
       token,
       process.env.JWT_SECRET as string,
     ) as IDecodedUser
-    ;(req as any).user = { id: decoded.id } // Set user ID from the token to the request object
+    ;(req as any).user = decoded.user // Set user ID from the token to the request object
     next()
   } catch (err) {
     res.status(401).json({ msg: 'Token is not valid' })
