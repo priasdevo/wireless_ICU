@@ -13,7 +13,7 @@ const useLogin = () => {
         username: username,
         password: password,
       })
-      router.push('/webcam')
+      //router.push('/webcam')
     } catch (err) {
       console.log(err)
     }

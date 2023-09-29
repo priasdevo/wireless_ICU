@@ -7,8 +7,14 @@ interface IDecodedUser {
   iat?: number
   exp?: number
 }
+
+enum UserRole {
+  VIEWER = 'viewer',
+  STREAMER = 'streamer',
+}
 interface SocketWithDecode extends Socket {
   decoded?: any
+  role?: UserRole
 }
 
 const streamSocket = (io: Server) => {
@@ -43,6 +49,7 @@ const streamSocket = (io: Server) => {
         }
 
         socket.join(device.deviceCode!)
+        socket.role = UserRole.STREAMER
         console.log(
           `Streamer identified and joined room: ${device.deviceCode!}`,
         )
@@ -60,6 +67,8 @@ const streamSocket = (io: Server) => {
         const user = await User.findById(decoded.id)
         const device = await Device.findOne({ deviceCode: room })
 
+        socket.role = UserRole.VIEWER
+
         if (user?.device!.includes(device?._id!)) {
           socket.join(room)
           console.log(`Joined as viewer in room: ${room}`)
@@ -71,10 +80,17 @@ const streamSocket = (io: Server) => {
       }
     })
 
-    socket.on('stream', (room: string, stream: any) => {
+    socket.on('stream', (stream: any) => {
       // Check if the socket is in the specified room as a streamer
-      const rooms = io.sockets.adapter.rooms
-      const isStreamer = rooms.get(room)?.has(socket.id)
+
+      const room = Array.from(socket.rooms).find((r) => r !== socket.id) // because socket.rooms also contains a room named after the socket's id
+
+      if (!room) {
+        console.warn('The socket is not connected to any room!')
+        return
+      }
+
+      const isStreamer = socket.role === UserRole.STREAMER
 
       if (!isStreamer) {
         console.warn(

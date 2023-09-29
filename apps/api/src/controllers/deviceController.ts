@@ -101,6 +101,7 @@ export const addDeviceToUser = async (req: IRequestWithUser, res: Response) => {
     if (!device) {
       return res.status(404).json({ msg: 'Device not found' })
     }
+    console.log(req.user)
 
     // 2. Add the Device's ID to the User's device array
     const user = await User.findById(req.user?.id) // Assuming you have attached the user's ID to the request as `req.user.id` through some middleware like JWT validation.
@@ -126,7 +127,8 @@ export const addDeviceToUser = async (req: IRequestWithUser, res: Response) => {
 export const removeDevice = async (req: IRequestWithUser, res: Response) => {
   try {
     // 1. Look up the Device using the deviceCode
-    const device = await Device.findOne({ deviceCode: req.body.deviceCode })
+    console.log(req)
+    const device = await Device.findOne({ deviceCode: req.query.deviceCode })
 
     if (!device) {
       return res.status(404).json({ msg: 'Device not found' })
