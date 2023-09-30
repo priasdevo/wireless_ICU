@@ -14,6 +14,8 @@ const useDeviceList = () => {
   const [deviceCode, setDeviceCode] = useState<string>('')
   const [password, setPassword] = useState<string>('')
 
+  const router = useRouter()
+
   useEffect(() => {
     fetchDevices()
   }, [])
@@ -55,6 +57,10 @@ const useDeviceList = () => {
     }
   }
 
+  const enterRoom = useCallback(async (id: string) => {
+    router.push(`/device/${id}`)
+  }, [])
+
   return {
     devices,
     setDevices,
@@ -66,6 +72,7 @@ const useDeviceList = () => {
     addDevice,
     removeDevice,
     error,
+    enterRoom,
   }
 }
 
