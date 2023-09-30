@@ -12,6 +12,7 @@ const DevicesPage = () => {
     setDeviceCode,
     password,
     setPassword,
+    enterRoom,
   } = useDeviceList()
 
   return (
@@ -45,7 +46,13 @@ const DevicesPage = () => {
               style={{ display: 'flex', flexDirection: 'row', gap: '10px' }}
             >
               <p>{device.macAddress}</p>
-              <p>{device.deviceCode}</p>
+              <p
+                onClick={() => {
+                  enterRoom(device.deviceCode)
+                }}
+              >
+                {device.deviceCode}
+              </p>
               <button onClick={() => removeDevice(device.deviceCode)}>
                 Remove
               </button>

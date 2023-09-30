@@ -30,6 +30,7 @@ const streamSocket = (io: Server) => {
             socket.disconnect()
           } else {
             socket.decoded = decoded
+            socket.emit('authen_success')
           }
         },
       )
@@ -62,6 +63,7 @@ const streamSocket = (io: Server) => {
     socket.on('join_room', async (room: string) => {
       try {
         const decoded = socket.decoded
+        console.log(decoded)
 
         // Fetch the device using the decoded ID
         const user = await User.findById(decoded.id)
