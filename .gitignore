@@ -36,4 +36,4 @@ next-env.d.ts
 
 
 # discord bot token
-./apps/api/src/discord/bot.json
+*bot.json
