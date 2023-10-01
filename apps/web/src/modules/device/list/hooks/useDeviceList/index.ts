@@ -3,8 +3,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 interface Device {
-  id: string
-  name: string
+  macAddress: string
+  deviceCode: string
 }
 
 const useDeviceList = () => {
@@ -13,6 +13,8 @@ const useDeviceList = () => {
   const [error, setError] = useState<string | null>(null)
   const [deviceCode, setDeviceCode] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+
+  const router = useRouter()
 
   useEffect(() => {
     fetchDevices()
@@ -36,18 +38,41 @@ const useDeviceList = () => {
         deviceCode: deviceCode,
         password: password,
       })
+      fetchDevices()
     } catch (err) {
       console.log(err)
     }
   }, [deviceCode, password])
 
-  const removeDevice = (id: string) => {
-    fetch(`http://backend-url.com/api/user/devices/${id}`, {
-      method: 'DELETE',
-    })
-      .then((response) => response.json())
-      .then(() => fetchDevices())
-      .catch((error) => setError(error.message))
+  const removeDevice = async (id: string) => {
+    try {
+      const res = await apiClient.delete('/authDevice/remove', {
+        params: {
+          deviceCode: id,
+        },
+      })
+      fetchDevices()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const enterRoom = useCallback(async (id: string) => {
+    router.push(`/device/${id}`)
+  }, [])
+
+  return {
+    devices,
+    setDevices,
+    deviceCode,
+    setDeviceCode,
+    loading,
+    password,
+    setPassword,
+    addDevice,
+    removeDevice,
+    error,
+    enterRoom,
   }
 }
 

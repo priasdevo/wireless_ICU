@@ -1,36 +1,115 @@
 import { Server, Socket } from 'socket.io'
+import jwt from 'jsonwebtoken'
+import Device from '../models/device'
+import User from '../models/user'
+interface IDecodedUser {
+  id: string
+  iat?: number
+  exp?: number
+}
+
+enum UserRole {
+  VIEWER = 'viewer',
+  STREAMER = 'streamer',
+}
+interface SocketWithDecode extends Socket {
+  decoded?: any
+  role?: UserRole
+}
 
 const streamSocket = (io: Server) => {
-  const clients = new Set<WebSocket>() // Store connected clients
-
-  io.on('connection', (socket: Socket) => {
+  io.on('connection', (socket: SocketWithDecode) => {
     console.log('Client connected')
 
-    socket.on('register', (type: 'streamer' | 'viewer') => {
-      if (type === 'streamer') {
-        socket.join('streamer')
-        console.log('Joined as streamer')
-      } else {
-        socket.join('viewer')
-        console.log('Joined as viewer')
+    socket.on('authenticate', (data) => {
+      jwt.verify(
+        data.token,
+        process.env.JWT_SECRET!,
+        (err: any, decoded: any) => {
+          if (err) {
+            socket.disconnect()
+          } else {
+            socket.decoded = decoded
+            socket.emit('authen_success')
+          }
+        },
+      )
+    })
+
+    socket.on('identify_streamer', async () => {
+      try {
+        // Verify the token
+        const decoded = socket.decoded
+
+        console.log('device decodede : ', decoded)
+
+        // Fetch the device using the decoded ID
+        const device = await Device.findById(decoded.deviceId)
+
+        if (!device) {
+          console.warn('Device not found!')
+          return
+        }
+
+        socket.join(device.deviceCode!)
+        socket.role = UserRole.STREAMER
+        socket.emit('identify_success', device.isHome)
+        console.log(
+          `Streamer identified and joined room: ${device.deviceCode!}`,
+        )
+      } catch (err) {
+        console.error('Error identifying streamer:', err)
       }
     })
 
-    socket.on('stream', (stream) => {
-      // Check if the socket is in the 'streamer' room before accepting the stream
-      const rooms = io.sockets.adapter.rooms
-      const isStreamer = rooms.get('streamer')?.has(socket.id)
+    // Viewer joins a room
+    socket.on('join_room', async (room: string) => {
+      try {
+        const decoded = socket.decoded
+        console.log(decoded)
 
-      if (!isStreamer) {
-        console.warn('Received a stream from a non-streamer client!')
+        // Fetch the device using the decoded ID
+        const user = await User.findById(decoded.user.id)
+        const device = await Device.findOne({ deviceCode: room })
+
+        socket.role = UserRole.VIEWER
+
+        if (user?.device!.includes(device?._id!)) {
+          socket.join(room)
+          console.log(`Joined as viewer in room: ${room}`)
+        } else {
+          console.log(user?.device)
+          console.error("User doesn't has authorize to visit this room")
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    })
+
+    socket.on('stream', (stream: any) => {
+      // Check if the socket is in the specified room as a streamer
+
+      const room = Array.from(socket.rooms).find((r) => r !== socket.id) // because socket.rooms also contains a room named after the socket's id
+
+      if (!room) {
+        console.warn('The socket is not connected to any room!')
         return
       }
 
-      console.log('Receive Stream')
-      console.log(stream)
+      const isStreamer = socket.role === UserRole.STREAMER
 
-      // Broadcasting the stream to all viewers
-      socket.to('viewer').emit('stream-data', stream)
+      if (!isStreamer) {
+        console.warn(
+          `Received a stream in room ${room} from a non-streamer client!`,
+        )
+        return
+      }
+
+      //console.log(`Receive Stream in room ${room}`)
+      //console.log(stream)
+
+      // Broadcasting the stream to all viewers in the room
+      socket.to(room).emit('stream-data', stream)
     })
 
     socket.on('disconnect', () => {

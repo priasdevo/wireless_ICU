@@ -6,6 +6,7 @@ import streamSocket from './sockets/streamSocket'
 import connectDB from './database/db'
 import dotenv from 'dotenv'
 import path from 'path'
+import cookieParser from 'cookie-parser'
 
 import authRoutes from './routes/auth'
 import deviceRoutes from './routes/deviceRoutes'
@@ -27,6 +28,7 @@ const app = express()
 
 app.use(express.json())
 app.use(cors(corsOptions))
+app.use(cookieParser())
 
 app.use('/auth', authRoutes)
 app.use('/authDevice', deviceRoutes)

@@ -17,6 +17,10 @@ const deviceSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  isHome: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 deviceSchema.pre('save', function (next) {
