@@ -41,8 +41,10 @@ const streamSocket = (io: Server) => {
         // Verify the token
         const decoded = socket.decoded
 
+        console.log('device decodede : ', decoded)
+
         // Fetch the device using the decoded ID
-        const device = await Device.findById(decoded.id)
+        const device = await Device.findById(decoded.deviceId)
 
         if (!device) {
           console.warn('Device not found!')
@@ -51,6 +53,7 @@ const streamSocket = (io: Server) => {
 
         socket.join(device.deviceCode!)
         socket.role = UserRole.STREAMER
+        socket.emit('identify_success', device.isHome)
         console.log(
           `Streamer identified and joined room: ${device.deviceCode!}`,
         )
@@ -66,7 +69,7 @@ const streamSocket = (io: Server) => {
         console.log(decoded)
 
         // Fetch the device using the decoded ID
-        const user = await User.findById(decoded.id)
+        const user = await User.findById(decoded.user.id)
         const device = await Device.findOne({ deviceCode: room })
 
         socket.role = UserRole.VIEWER
@@ -75,6 +78,7 @@ const streamSocket = (io: Server) => {
           socket.join(room)
           console.log(`Joined as viewer in room: ${room}`)
         } else {
+          console.log(user?.device)
           console.error("User doesn't has authorize to visit this room")
         }
       } catch (err) {
@@ -101,8 +105,8 @@ const streamSocket = (io: Server) => {
         return
       }
 
-      console.log(`Receive Stream in room ${room}`)
-      console.log(stream)
+      //console.log(`Receive Stream in room ${room}`)
+      //console.log(stream)
 
       // Broadcasting the stream to all viewers in the room
       socket.to(room).emit('stream-data', stream)
