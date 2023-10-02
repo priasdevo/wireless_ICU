@@ -10,7 +10,6 @@ export const compileVideo = (images: any[], FRAME_RATE: number) => {
 
   // Write images to disk
   images.forEach((img, index) => {
-    console.log(index)
     fs.writeFileSync(`${imageFolder}/img_${index}.jpg`, img, 'base64')
   })
 

@@ -4,12 +4,7 @@ import Device from '../models/device'
 import User from '../models/user'
 import Notification from '../models/notification'
 import { compileVideo } from './function'
-import { sampleEmbed } from '../discord/bots'
-interface IDecodedUser {
-  id: string
-  iat?: number
-  exp?: number
-}
+import { notify } from '../discord/bots'
 
 enum UserRole {
   VIEWER = 'viewer',
@@ -86,10 +81,10 @@ const streamSocket = (io: Server) => {
         // Verify the token
         const decoded = socket.decoded
 
-        console.log('device decodede : ', decoded)
-
         // Fetch the device using the decoded ID
         const device = await Device.findById(decoded.deviceId)
+
+        socket.decoded.deviceCode = device?.deviceCode
 
         if (!device) {
           console.warn('Device not found!')
@@ -111,7 +106,6 @@ const streamSocket = (io: Server) => {
     socket.on('join_room', async (room: string) => {
       try {
         const decoded = socket.decoded
-        console.log(decoded)
 
         // Fetch the device using the decoded ID
         const user = await User.findById(decoded.user.id)
@@ -171,15 +165,6 @@ const streamSocket = (io: Server) => {
       }
       imageBuffers[room].push(stream)
 
-      if (imageBuffers[room].isRecording()) {
-        console.log(
-          'Frame after detect ',
-          imageBuffers[room].framesAfterDetection,
-          '  ',
-          FRAME_RATE,
-        )
-      }
-
       if (
         imageBuffers[room].isRecording() &&
         imageBuffers[room].framesAfterDetection === FRAME_RATE * 10
@@ -193,9 +178,14 @@ const streamSocket = (io: Server) => {
           device: socket.decoded.deviceId,
           videoLink: videoLink,
         })
-        await notification.save()
+        const n_notification = await notification.save()
 
-        sampleEmbed('1157728920339234996')
+        //sampleEmbed('1157728920339234996')
+        notify(
+          '1158414358938910741',
+          socket.decoded.deviceCode,
+          `http://localhost:3000/notification/${n_notification._id}`,
+        )
       }
     })
 
