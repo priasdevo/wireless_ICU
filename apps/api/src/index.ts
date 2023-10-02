@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser'
 
 import authRoutes from './routes/auth'
 import deviceRoutes from './routes/deviceRoutes'
+import { registerBot } from './discord/bots'
 
 const SocketIO = require('socket.io')
 dotenv.config({ path: path.resolve(__dirname, './config/.env') })
@@ -54,3 +55,9 @@ process.on('unhandledRejection', (err: Error, promise) => {
   console.log(`Error: ${err.message}`)
   server.close(() => process.exit(1))
 })
+
+
+// Discord Bot
+
+
+const client = registerBot()
