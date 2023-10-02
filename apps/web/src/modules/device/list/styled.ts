@@ -1,58 +1,48 @@
-import { styled, Card } from '@mui/material'
+import { Card, styled } from '@mui/material'
 
 export const RootContainer = styled('div')`
   background-color: #f0e2a3;
   display: flex;
+  gap: 30px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 10%;
 `
 
-export const LoginContainer = styled(Card)`
+export const CardContainer = styled(Card)`
   display: flex;
   flex-direction: column;
   background-color: #f9d4bb;
-  width: 40vw;
-  height: 50vh;
+  width: fit-content;
   justify-content: center;
   align-items: center;
-  padding-bottom:7%;
+  padding: 32px;
+  gap: 20px;
 `
 
-export const FormContainer = styled('form')`
-  justify-content: center;
-  align-items: center;
-  width: 400px;
-  height: 150px;
-  padding-top: 15px;
-`
 
-export const InputGroup = styled('div')`
-  margin-bottom: 15px;
-`
 
+export const Input = styled('input')`
+  width: fit-content;
+  padding: 10px;
+  margin-right: 20px;
+  box-sizing: border-box;
+`
 export const Label = styled('label')`
-  font-size: 20px;
+  font-size: 16px;
   font-family: 'Roboto', sans-serif;
   font-weight: 600;
-  color: #ED7C31; 
   display: block;
   margin-bottom: 5px;
 `
 
-export const Input = styled('input')`
-  width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
-`
-
 export const Button = styled('button')`
-  width: 100%;
+  width: max-content;
   margin-top: 2px;
-  padding: 10px 15px;
-  background-color: #ED7C31;
-  font-size: 20px;
+  padding: 10px 20px;
+  background-color: #ed7c31;
+  font-size: 18px;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   color: #fff;
