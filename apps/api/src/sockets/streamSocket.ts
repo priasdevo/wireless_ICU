@@ -2,6 +2,8 @@ import { Server, Socket } from 'socket.io'
 import jwt from 'jsonwebtoken'
 import Device from '../models/device'
 import User from '../models/user'
+import Notification from '../models/notification'
+import { compileVideo } from './function'
 interface IDecodedUser {
   id: string
   iat?: number
@@ -16,6 +18,26 @@ interface SocketWithDecode extends Socket {
   decoded?: any
   role?: UserRole
 }
+
+const FRAME_RATE = 10 // Assuming 10 frames per second
+const BUFFER_SIZE = FRAME_RATE * 10 * 2 // 10 seconds before and after
+
+class ImageBuffer {
+  private buffer: any[] = []
+
+  push(image: any) {
+    if (this.buffer.length >= BUFFER_SIZE) {
+      this.buffer.shift()
+    }
+    this.buffer.push(image)
+  }
+
+  getImages() {
+    return this.buffer
+  }
+}
+
+const imageBuffers: { [key: string]: ImageBuffer } = {}
 
 const streamSocket = (io: Server) => {
   io.on('connection', (socket: SocketWithDecode) => {
@@ -86,6 +108,28 @@ const streamSocket = (io: Server) => {
       }
     })
 
+    socket.on('movement_detected', async () => {
+      const room: string | undefined = Array.from(socket.rooms).find(
+        (r) => r !== socket.id,
+      ) // because socket.rooms also contains a room named after the socket's id
+      let videoLink
+
+      if (socket.role !== UserRole.STREAMER) {
+        console.warn('This notice does not come from device!')
+        return
+      }
+
+      if (imageBuffers[room!]) {
+        videoLink = compileVideo(imageBuffers[room!].getImages(), FRAME_RATE)
+      }
+
+      const notification = new Notification({
+        device: socket.decoded.deviceId,
+        videoLink: videoLink,
+      })
+      await notification.save()
+    })
+
     socket.on('stream', (stream: any) => {
       // Check if the socket is in the specified room as a streamer
 
@@ -110,6 +154,11 @@ const streamSocket = (io: Server) => {
 
       // Broadcasting the stream to all viewers in the room
       socket.to(room).emit('stream-data', stream)
+
+      if (!imageBuffers[room]) {
+        imageBuffers[room] = new ImageBuffer()
+      }
+      imageBuffers[room].push(stream)
     })
 
     socket.on('disconnect', () => {
