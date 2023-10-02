@@ -3,7 +3,7 @@ import { Card, styled } from '@mui/material'
 export const RootContainer = styled('div')`
   background-color: #f0e2a3;
   display: flex;
-  gap: 20px;
+  gap: 30px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -12,27 +12,37 @@ export const RootContainer = styled('div')`
 
 export const CardContainer = styled(Card)`
   display: flex;
-  flex-direction: row;
-  gap: 10px;
+  flex-direction: column;
   background-color: #f9d4bb;
-  width: 60vw;
-  height: 50vh;
+  width: fit-content;
   justify-content: center;
   align-items: center;
-  padding-bottom: 7%;
+  padding: 32px;
+  gap: 20px;
 `
+
+
+
 export const Input = styled('input')`
-  width: 30%;
+  width: fit-content;
   padding: 10px;
+  margin-right: 20px;
   box-sizing: border-box;
+`
+export const Label = styled('label')`
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
 `
 
 export const Button = styled('button')`
-  width: 20%;
+  width: max-content;
   margin-top: 2px;
   padding: 10px 20px;
-  background-color: #ED7C31;
-  font-size: 10px;
+  background-color: #ed7c31;
+  font-size: 18px;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   color: #fff;

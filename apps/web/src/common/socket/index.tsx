@@ -24,7 +24,7 @@ export const SocketProvider = ({ children, socket }: ISocketProvider) => {
 
       socket.on('authen_success', () => {
         console.log('prias false')
-
+        setLoading(false);
         // other logic
       })
 
