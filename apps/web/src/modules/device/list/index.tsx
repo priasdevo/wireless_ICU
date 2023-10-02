@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { Button, CardContainer, Input, RootContainer } from './styled'
+import { Typography } from '@mui/material'
 import useDeviceList from './hooks/useDeviceList'
 
 const DevicesPage = () => {
@@ -16,24 +18,25 @@ const DevicesPage = () => {
   } = useDeviceList()
 
   return (
-    <div>
-      <h1>User Devices</h1>
-
-      <div>
-        <input
+    <RootContainer>
+      <Typography variant="h3" color="#d56f2c">
+        User Devices
+      </Typography>
+      <CardContainer>
+        <Input
           type="text"
           placeholder="Device Code"
           value={deviceCode}
           onChange={(e) => setDeviceCode(e.target.value)}
         />
-        <input
+        <Input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button onClick={addDevice}>Add Device</button>
-      </div>
+        <Button onClick={addDevice}>Add Device</Button>
+      </CardContainer>
 
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
@@ -53,14 +56,14 @@ const DevicesPage = () => {
               >
                 {device.deviceCode}
               </p>
-              <button onClick={() => removeDevice(device.deviceCode)}>
+              <Button onClick={() => removeDevice(device.deviceCode)}>
                 Remove
-              </button>
+              </Button>
             </li>
           ))}
         </ul>
       )}
-    </div>
+    </RootContainer>
   )
 }
 
