@@ -2,6 +2,9 @@ import { Server, Socket } from 'socket.io'
 import jwt from 'jsonwebtoken'
 import Device from '../models/device'
 import User from '../models/user'
+import Notification from '../models/notification'
+import { compileVideo } from './function'
+import { sampleEmbed } from '../discord/bots'
 interface IDecodedUser {
   id: string
   iat?: number
@@ -17,9 +20,51 @@ interface SocketWithDecode extends Socket {
   role?: UserRole
 }
 
+const FRAME_RATE = 30 // Assuming 10 frames per second
+const BUFFER_SIZE = FRAME_RATE * 10 * 2 // 10 seconds before and after
+
+class ImageBuffer {
+  private buffer: any[] = []
+  private recording: boolean = false
+  public framesAfterDetection: number = 0
+
+  push(image: any) {
+    this.buffer.push(image)
+
+    if (this.recording) {
+      this.framesAfterDetection++
+    }
+
+    if (this.framesAfterDetection > FRAME_RATE * 10) {
+      // 10 seconds after movement
+      this.recording = false
+      this.framesAfterDetection = 0
+    }
+
+    while (this.buffer.length > BUFFER_SIZE) {
+      this.buffer.shift()
+    }
+  }
+
+  startRecording() {
+    this.recording = true
+  }
+
+  isRecording() {
+    return this.recording
+  }
+
+  getImages() {
+    return this.buffer
+  }
+}
+
+const imageBuffers: { [key: string]: ImageBuffer } = {}
+
 const streamSocket = (io: Server) => {
   io.on('connection', (socket: SocketWithDecode) => {
     console.log('Client connected')
+    //sampleEmbed('1157728920339234996')
 
     socket.on('authenticate', (data) => {
       jwt.verify(
@@ -72,6 +117,8 @@ const streamSocket = (io: Server) => {
         const user = await User.findById(decoded.user.id)
         const device = await Device.findOne({ deviceCode: room })
 
+        socket.emit('isHome_Change', device?.isHome)
+
         socket.role = UserRole.VIEWER
 
         if (user?.device!.includes(device?._id!)) {
@@ -86,10 +133,22 @@ const streamSocket = (io: Server) => {
       }
     })
 
-    socket.on('stream', (stream: any) => {
-      // Check if the socket is in the specified room as a streamer
+    socket.on('movement_detected', async () => {
+      if (socket.role !== UserRole.STREAMER) {
+        console.warn('This notice does not come from device!')
+        return
+      }
 
-      const room = Array.from(socket.rooms).find((r) => r !== socket.id) // because socket.rooms also contains a room named after the socket's id
+      const room = Array.from(socket.rooms).find((r) => r !== socket.id)
+      if (room && imageBuffers[room]) {
+        imageBuffers[room].startRecording()
+      }
+
+      console.log('Detected')
+    })
+
+    socket.on('stream', async (stream: any) => {
+      const room = Array.from(socket.rooms).find((r) => r !== socket.id)
 
       if (!room) {
         console.warn('The socket is not connected to any room!')
@@ -105,11 +164,63 @@ const streamSocket = (io: Server) => {
         return
       }
 
-      //console.log(`Receive Stream in room ${room}`)
-      //console.log(stream)
-
-      // Broadcasting the stream to all viewers in the room
       socket.to(room).emit('stream-data', stream)
+
+      if (!imageBuffers[room]) {
+        imageBuffers[room] = new ImageBuffer()
+      }
+      imageBuffers[room].push(stream)
+
+      if (imageBuffers[room].isRecording()) {
+        console.log(
+          'Frame after detect ',
+          imageBuffers[room].framesAfterDetection,
+          '  ',
+          FRAME_RATE,
+        )
+      }
+
+      if (
+        imageBuffers[room].isRecording() &&
+        imageBuffers[room].framesAfterDetection === FRAME_RATE * 10
+      ) {
+        console.log('Compiling')
+        const videoLink = compileVideo(
+          imageBuffers[room].getImages(),
+          FRAME_RATE,
+        )
+        const notification = new Notification({
+          device: socket.decoded.deviceId,
+          videoLink: videoLink,
+        })
+        await notification.save()
+
+        sampleEmbed('1157728920339234996')
+      }
+    })
+
+    socket.on('change_home', async (isHome: boolean) => {
+      try {
+        const decoded = socket.decoded
+        console.log(decoded)
+
+        const room = Array.from(socket.rooms).find((r) => r !== socket.id)
+
+        if (!room) {
+          console.warn('The socket is not connected to any room!')
+          return
+        }
+
+        const device = await Device.findOneAndUpdate(
+          { deviceCode: room },
+          { isHome: isHome },
+          { new: true },
+        )
+
+        socket.to(room).emit('isHome_Change', isHome)
+      } catch (err) {
+        console.log(err)
+      }
     })
 
     socket.on('disconnect', () => {

@@ -40,8 +40,13 @@ export const registerDevice = async (req: Request, res: Response) => {
       token,
     })
 
-    await device.save()
-    res.json({ msg: 'Device registered successfully', token }) // Return token if device opted for token-based authentication
+    const savedDevice = await device.save()
+
+    res.json({
+      msg: 'Device registered successfully',
+      token: token,
+      deviceCode: savedDevice.deviceCode,
+    })
   } catch (err) {
     console.error((err as Error).message)
     res.status(500).send('Server error')

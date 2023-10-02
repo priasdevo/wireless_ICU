@@ -1,14 +1,19 @@
 import { useSocket } from '@/common/socket'
-import { useRouter } from 'next/router'
 import React, { useRef, useEffect, useState } from 'react'
+import useStreamRoom from './hooks/useStreamRoom'
 
 const VideoStreamPage: React.FC = () => {
   const { socket } = useSocket()
   // const videoRef = useRef<HTMLVideoElement>(null)
   const videoRef = useRef<HTMLImageElement>(null)
   const [imageUrl, setImageUrl] = useState('string')
-  const router = useRouter()
-  const { id } = router.query
+  const [homeStatus, setHomeStatus] = useState<string>('') // Default to 'notHome'
+  const { notifications, id } = useStreamRoom()
+
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHomeStatus(e.target.value)
+    socket.emit('change_home', e.target.value === 'isHome' ? true : false)
+  }
 
   useEffect(() => {
     //socket.emit('join_room', id)
@@ -16,16 +21,9 @@ const VideoStreamPage: React.FC = () => {
     if (id) {
       socket.emit('join_room', id)
       socket.on('stream-data', (data: any) => {
-        // Assuming the video data is a blob
-        // if (videoRef.current) {
-        //   const blob = new Blob([data], { type: 'video/mp4' })
-        //   videoRef.current.src = URL.createObjectURL(blob)
-        // }
-
         setImageUrl(`data:image/jpeg;base64,${data}`)
 
         if (videoRef.current) {
-          // Convert base64 to blob and set as image src
           const base64ToBlob = (base64: any) => {
             let binary = atob(base64.split(',')[1])
             let array = []
@@ -39,6 +37,9 @@ const VideoStreamPage: React.FC = () => {
           videoRef.current.src = URL.createObjectURL(blob)
         }
       })
+      socket.on('isHome_Change', (isHome: boolean) => {
+        setHomeStatus(isHome ? 'isHome' : 'notHome')
+      })
     }
 
     // Cleanup the socket connection on component unmount
@@ -49,8 +50,37 @@ const VideoStreamPage: React.FC = () => {
 
   return (
     <div>
-      {/* <video ref={videoRef} controls autoPlay></video> */}
       <img src={imageUrl} alt="Video Stream" />
+      <div>
+        <input
+          type="radio"
+          id="isHome"
+          name="homeStatus"
+          value="isHome"
+          checked={homeStatus === 'isHome'}
+          onChange={handleRadioChange}
+        />
+        <label htmlFor="isHome">At Home</label>
+
+        <input
+          type="radio"
+          id="notIsHome"
+          name="homeStatus"
+          value="notHome"
+          checked={homeStatus === 'notHome'}
+          onChange={handleRadioChange}
+        />
+        <label htmlFor="notIsHome">not at Home</label>
+      </div>
+      {notifications &&
+        notifications.map((notification: any) => {
+          return (
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
+              <p>{notification.videoLink}</p>
+              <p>{notification.timestamp}</p>
+            </div>
+          )
+        })}
     </div>
   )
 }

@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser'
 
 import authRoutes from './routes/auth'
 import deviceRoutes from './routes/deviceRoutes'
+import notificationRoutes from './routes/notification'
 import { registerBot } from './discord/bots'
 
 const SocketIO = require('socket.io')
@@ -33,6 +34,7 @@ app.use(cookieParser())
 
 app.use('/auth', authRoutes)
 app.use('/authDevice', deviceRoutes)
+app.use('/notification', notificationRoutes)
 
 const server = http.createServer(app)
 
@@ -56,8 +58,6 @@ process.on('unhandledRejection', (err: Error, promise) => {
   server.close(() => process.exit(1))
 })
 
-
 // Discord Bot
-
 
 const client = registerBot()
