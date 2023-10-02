@@ -68,3 +68,19 @@ export const sampleEmbed = async (channelId: string) => {
     channel.send({ embeds: [embed] });
   }
 }
+
+export const notify = async (channelId: string, deviceID: string, link: string) => {
+  if(link === '') link = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  const embed = new EmbedBuilder()
+      .setColor('#9e001a')
+      .setTitle('Movement Detected from device ' + deviceID+'!')
+      .setDescription('Your device has detected activity and recorded a video.')
+      .addFields({name: 'Timestamp', value: new Date().toLocaleString(), inline: true})
+      .addFields({name: 'Footage', value: link, inline: true})
+      .setFooter({text: 'ICU version 0.0.1'})
+  const channel = await client.channels.fetch(channelId);
+  if(!channel) return console.log('Channel not found');
+  if (channel.isTextBased()) {
+    channel.send({ embeds: [embed] });
+  }
+}
