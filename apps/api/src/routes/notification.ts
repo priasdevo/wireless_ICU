@@ -13,4 +13,10 @@ router.get(
   notificationController.getDeviceNotifications,
 )
 
+router.get(
+  '/video/:id',
+  authMiddleware,
+  notificationController.getNotificationsVideo,
+)
+
 export default router

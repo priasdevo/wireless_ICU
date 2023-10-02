@@ -21,11 +21,18 @@ export const compileVideo = (images: any[], FRAME_RATE: number) => {
     (error) => {
       if (error) {
         console.error(`Error compiling video: ${error}`)
+        try {
+          for (let i = 0; i < images.length; i++) {
+            fs.unlinkSync(`${imageFolder}/img_${i}.jpg`)
+          }
+        } catch (err2) {
+          console.log(err2)
+        }
       } else {
         console.log(`Video compiled: ${videoName}`)
         // Cleanup images from disk
         for (let i = 0; i < images.length; i++) {
-          //fs.unlinkSync(`${imageFolder}/img_${i}.jpg`)
+          fs.unlinkSync(`${imageFolder}/img_${i}.jpg`)
         }
       }
     },
