@@ -14,7 +14,7 @@ export const SocketProvider = ({ children, socket }: ISocketProvider) => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (router.pathname !== '/login') {
+      if (router.pathname !== '/login' && router.pathname !== '/register') {
         setLoading(true)
       }
       console.log('prias true')
