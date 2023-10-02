@@ -4,6 +4,7 @@ import Device from '../models/device'
 import User from '../models/user'
 import Notification from '../models/notification'
 import { compileVideo } from './function'
+import { sampleEmbed } from '../discord/bots'
 interface IDecodedUser {
   id: string
   iat?: number
@@ -42,6 +43,7 @@ const imageBuffers: { [key: string]: ImageBuffer } = {}
 const streamSocket = (io: Server) => {
   io.on('connection', (socket: SocketWithDecode) => {
     console.log('Client connected')
+    //sampleEmbed('1157728920339234996')
 
     socket.on('authenticate', (data) => {
       jwt.verify(
@@ -109,9 +111,9 @@ const streamSocket = (io: Server) => {
     })
 
     socket.on('movement_detected', async () => {
-      const room: string | undefined = Array.from(socket.rooms).find(
-        (r) => r !== socket.id,
-      ) // because socket.rooms also contains a room named after the socket's id
+      // const room: string | undefined = Array.from(socket.rooms).find(
+      //   (r) => r !== socket.id,
+      // ) // because socket.rooms also contains a room named after the socket's id
       let videoLink
 
       if (socket.role !== UserRole.STREAMER) {
@@ -119,15 +121,19 @@ const streamSocket = (io: Server) => {
         return
       }
 
-      if (imageBuffers[room!]) {
-        videoLink = compileVideo(imageBuffers[room!].getImages(), FRAME_RATE)
-      }
+      // if (imageBuffers[room!]) {
+      //   videoLink = compileVideo(imageBuffers[room!].getImages(), FRAME_RATE)
+      // }
+
+      console.log('Detected')
 
       const notification = new Notification({
         device: socket.decoded.deviceId,
         videoLink: videoLink,
       })
       await notification.save()
+
+      sampleEmbed('1157728920339234996')
     })
 
     socket.on('stream', (stream: any) => {
