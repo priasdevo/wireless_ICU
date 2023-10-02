@@ -17,12 +17,12 @@ export const registerBot = () => {
   })
   
   client.on("messageCreate", async (msg: { author: { bot: any; }; content: string; reply: (arg0: string) => void; }) =>  {
-    console.log(msg.content);
+    //console.log(msg.content);
     if (msg.author.bot) return;
     if (msg.content.toLocaleLowerCase() === "hello") {
       msg.reply("Hi!");
       return;
-    }
+    }/*
     if (msg.content.toLocaleLowerCase() === "test") {
       console.log('test123');
       messageChannel('1157728920339234996', 'messaging this channel.')
@@ -33,7 +33,7 @@ export const registerBot = () => {
       //sampleEmbed('1157728920339234996');
       notify('1157728920339234996', '012345', '')
       return;
-    }
+    }*/
 
   });
   
