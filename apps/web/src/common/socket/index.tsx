@@ -14,7 +14,9 @@ export const SocketProvider = ({ children, socket }: ISocketProvider) => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setLoading(true)
+      if (router.pathname !== '/login') {
+        setLoading(true)
+      }
       console.log('prias true')
       socket.emit('authenticate', { token: localStorage.getItem('token') })
 
@@ -22,7 +24,7 @@ export const SocketProvider = ({ children, socket }: ISocketProvider) => {
 
       socket.on('authen_success', () => {
         console.log('prias false')
-        setLoading(false)
+
         // other logic
       })
 
