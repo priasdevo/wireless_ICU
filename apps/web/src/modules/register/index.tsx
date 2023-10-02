@@ -1,6 +1,15 @@
 import React, { useState } from 'react'
-import { RegisterContainer, InputGroup, Label, Input, Button } from './styled'
+import {
+  RegisterContainer,
+  InputGroup,
+  Label,
+  Input,
+  Button,
+  FormContainer,
+  RootContainer,
+} from './styled'
 import useRegister from './hooks/useRegister'
+import { Typography } from '@mui/material'
 
 interface RegisterProps {
   onRegister?: (username: string, password: string, email: string) => void
@@ -26,9 +35,12 @@ const RegisterPage = () => {
   }
 
   return (
-    <RegisterContainer>
-      <h2>Register</h2>
-      <form onSubmit={handleRegister}>
+    <RootContainer>    
+      <RegisterContainer>
+      <Typography variant="h4" color="#d56f2c">
+        Sign up
+      </Typography>
+      <FormContainer onSubmit={handleRegister}>
         <InputGroup>
           <Label htmlFor="username">Username:</Label>
           <Input
@@ -57,8 +69,9 @@ const RegisterPage = () => {
           />
         </InputGroup>
         <Button type="submit">Register</Button>
-      </form>
+      </FormContainer>
     </RegisterContainer>
+    </RootContainer>
   )
 }
 

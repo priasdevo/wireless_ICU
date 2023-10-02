@@ -1,37 +1,66 @@
-import styled from 'styled-components'
+import { styled, Card } from '@mui/material'
 
-export const LoginContainer = styled.div`
-  max-width: 300px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+export const RootContainer = styled('div')`
+  background-color: #f0e2a3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10%;
 `
 
-export const InputGroup = styled.div`
+export const LoginContainer = styled(Card)`
+  display: flex;
+  flex-direction: column;
+  background-color: #f9d4bb;
+  width: 40vw;
+  height: 50vh;
+  justify-content: center;
+  align-items: center;
+  padding-bottom:7%;
+`
+
+export const FormContainer = styled('form')`
+  justify-content: center;
+  align-items: center;
+  width: 400px;
+  height: 150px;
+  padding-top: 15px;
+`
+
+export const InputGroup = styled('div')`
   margin-bottom: 15px;
 `
 
-export const Label = styled.label`
+export const Label = styled('label')`
+  font-size: 20px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  color: #ED7C31; 
   display: block;
   margin-bottom: 5px;
 `
 
-export const Input = styled.input`
+export const Input = styled('input')`
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   box-sizing: border-box;
 `
 
-export const Button = styled.button`
+export const Button = styled('button')`
+  width: 100%;
+  margin-top: 2px;
   padding: 10px 15px;
-  background-color: #007bff;
+  background-color: #ED7C31;
+  font-size: 20px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #f0965a;
   }
 `
