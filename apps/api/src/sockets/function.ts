@@ -15,7 +15,7 @@ export const compileVideo = (images: any[], FRAME_RATE: number) => {
   })
 
   // Use ffmpeg to stitch images into a video
-  const videoName = `video_${Date.now()}.mp4`
+  const videoName = `./video/video_${Date.now()}.mp4`
   exec(
     `ffmpeg -framerate ${FRAME_RATE} -i ${imageFolder}/img_%d.jpg -c:v libx264 -pix_fmt yuv420p ${videoName}`,
     (error) => {
