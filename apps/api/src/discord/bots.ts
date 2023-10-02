@@ -30,7 +30,8 @@ export const registerBot = () => {
       return;
     }
     if (msg.content.toLocaleLowerCase() === "embed") {
-      sampleEmbed('1157728920339234996');
+      //sampleEmbed('1157728920339234996');
+      notify('1157728920339234996', '012345', '')
       return;
     }
 
@@ -71,12 +72,13 @@ export const sampleEmbed = async (channelId: string) => {
 
 export const notify = async (channelId: string, deviceID: string, link: string) => {
   if(link === '') link = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  const footageHyperlink = '[File Link]('+link+')';
   const embed = new EmbedBuilder()
       .setColor('#9e001a')
       .setTitle('Movement Detected from device ' + deviceID+'!')
       .setDescription('Your device has detected activity and recorded a video.')
-      .addFields({name: 'Timestamp', value: new Date().toLocaleString(), inline: true})
-      .addFields({name: 'Footage', value: link, inline: true})
+      .addFields({name: 'Timestamp', value: new Date().toLocaleString(), inline: false})
+      .addFields({name: 'Footage', value: footageHyperlink, inline: false})
       .setFooter({text: 'ICU version 0.0.1'})
   const channel = await client.channels.fetch(channelId);
   if(!channel) return console.log('Channel not found');
