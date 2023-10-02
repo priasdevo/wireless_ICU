@@ -5,6 +5,7 @@ interface Notification {
   device: string
   videoLink: string
   timestamp: Date
+  _id: string
 }
 
 const useNotificationList = () => {

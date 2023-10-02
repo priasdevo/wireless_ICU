@@ -21,8 +21,6 @@ export const CardContainer = styled(Card)`
   gap: 20px;
 `
 
-
-
 export const Input = styled('input')`
   width: fit-content;
   padding: 10px;
@@ -41,7 +39,7 @@ export const Button = styled('button')`
   width: max-content;
   margin-top: 2px;
   padding: 10px 20px;
-  background-color: #ed7c31;
+  background-color: brown;
   font-size: 18px;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;

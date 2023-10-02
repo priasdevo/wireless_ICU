@@ -1,11 +1,12 @@
 import React from 'react'
 import useNotificationList from './hooks/useNotificationList'
-import { CardContainer, RootContainer } from './styled'
+import { Button, CardContainer, RootContainer } from './styled'
 import { Typography } from '@mui/material'
+import { useRouter } from 'next/router'
 
 const NotificationsPage: React.FC = () => {
   const { notifications } = useNotificationList()
-
+  const router = useRouter()
   return (
     <RootContainer>
       <Typography variant="h3" color="#d56f2c" style={{}}>
@@ -52,6 +53,11 @@ const NotificationsPage: React.FC = () => {
                       {' '}
                       {notification.timestamp.toLocaleString()}
                     </Typography>
+                    <Button onClick={() => {
+                  router.push(`/notification/${notification._id}`)
+                }}>
+                Join 
+              </Button>
                   </div>
                 </li>
               </CardContainer>
