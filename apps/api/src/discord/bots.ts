@@ -17,12 +17,12 @@ export const registerBot = () => {
   })
   
   client.on("messageCreate", async (msg: { author: { bot: any; }; content: string; reply: (arg0: string) => void; }) =>  {
-    console.log(msg.content);
+    //console.log(msg.content);
     if (msg.author.bot) return;
     if (msg.content.toLocaleLowerCase() === "hello") {
       msg.reply("Hi!");
       return;
-    }
+    }/*
     if (msg.content.toLocaleLowerCase() === "test") {
       console.log('test123');
       messageChannel('1157728920339234996', 'messaging this channel.')
@@ -30,9 +30,10 @@ export const registerBot = () => {
       return;
     }
     if (msg.content.toLocaleLowerCase() === "embed") {
-      sampleEmbed('1157728920339234996');
+      //sampleEmbed('1157728920339234996');
+      notify('1157728920339234996', '012345', '')
       return;
-    }
+    }*/
 
   });
   
@@ -62,6 +63,23 @@ export const sampleEmbed = async (channelId: string) => {
       .addFields({name: 'Field 1', value: 'Field 1 Value', inline: true})
       .addFields({name: 'Field 2', value: 'Field 2 Value', inline: true})
       .setFooter({text: 'This is a footer.'})
+  const channel = await client.channels.fetch(channelId);
+  if(!channel) return console.log('Channel not found');
+  if (channel.isTextBased()) {
+    channel.send({ embeds: [embed] });
+  }
+}
+
+export const notify = async (channelId: string, deviceID: string, link: string) => {
+  if(link === '') link = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+  const footageHyperlink = '[File Link]('+link+')';
+  const embed = new EmbedBuilder()
+      .setColor('#9e001a')
+      .setTitle('Movement Detected from device ' + deviceID+'!')
+      .setDescription('Your device has detected activity and recorded a video.')
+      .addFields({name: 'Timestamp', value: new Date().toLocaleString(), inline: false})
+      .addFields({name: 'Footage', value: footageHyperlink, inline: false})
+      .setFooter({text: 'ICU version 0.0.1'})
   const channel = await client.channels.fetch(channelId);
   if(!channel) return console.log('Channel not found');
   if (channel.isTextBased()) {
