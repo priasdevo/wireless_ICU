@@ -1,6 +1,9 @@
 import { useSocket } from '@/common/socket'
 import React, { useRef, useEffect, useState } from 'react'
 import useStreamRoom from './hooks/useStreamRoom'
+import { Typography } from '@mui/material'
+import { Button, CardContainer, Input, Label } from './styled'
+import { useRouter } from 'next/router'
 
 const VideoStreamPage: React.FC = () => {
   const { socket } = useSocket()
@@ -9,7 +12,7 @@ const VideoStreamPage: React.FC = () => {
   const [imageUrl, setImageUrl] = useState('string')
   const [homeStatus, setHomeStatus] = useState<string>('') // Default to 'notHome'
   const { notifications, id } = useStreamRoom()
-
+  const router = useRouter()
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHomeStatus(e.target.value)
     socket.emit('change_home', e.target.value === 'isHome' ? true : false)
@@ -49,10 +52,21 @@ const VideoStreamPage: React.FC = () => {
   }, [id])
 
   return (
-    <div>
-      <img src={imageUrl} alt="Video Stream" />
-      <div>
-        <input
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '40px',
+      }}
+    >
+      <img
+        src={imageUrl}
+        alt="Video Stream"
+        style={{ marginTop: '100px', marginBottom: '50px' }}
+      />
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <Input
           type="radio"
           id="isHome"
           name="homeStatus"
@@ -60,9 +74,10 @@ const VideoStreamPage: React.FC = () => {
           checked={homeStatus === 'isHome'}
           onChange={handleRadioChange}
         />
-        <label htmlFor="isHome">At Home</label>
+        <Label htmlFor="isHome">At Home</Label>
 
-        <input
+        <Input
+          style={{ marginLeft: '40px' }}
           type="radio"
           id="notIsHome"
           name="homeStatus"
@@ -70,15 +85,46 @@ const VideoStreamPage: React.FC = () => {
           checked={homeStatus === 'notHome'}
           onChange={handleRadioChange}
         />
-        <label htmlFor="notIsHome">not at Home</label>
+        <Label htmlFor="notIsHome">not at Home</Label>
+      </div>
+      <Typography
+        variant="h4"
+        color="#ed7c31"
+        style={{ marginTop: '100px', marginBottom: '30px' }}
+      >
+        Notification of this device
+      </Typography>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '220px' }}>
+        <Typography
+          variant="h5"
+          color="#ed7c31"
+          style={{ marginLeft: '100px' }}
+        >
+          Time
+        </Typography>
+        <Typography variant="h5" color="#ed7c31">
+          Video Link
+        </Typography>
       </div>
       {notifications &&
         notifications.map((notification: any) => {
           return (
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-              <p>{notification.videoLink}</p>
-              <p>{notification.timestamp}</p>
-            </div>
+            <CardContainer>
+              <div
+                style={{ display: 'flex', flexDirection: 'row', gap: '120px' }}
+              >
+                <Typography variant="h6" color="#d56f2c">
+                  {notification.timestamp}
+                </Typography>
+                <Button
+                  onClick={() => {
+                    router.push(`/notification/${notification._id}`)
+                  }}
+                >
+                  Join
+                </Button>
+              </div>
+            </CardContainer>
           )
         })}
     </div>
