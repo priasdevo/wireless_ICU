@@ -18,6 +18,7 @@ const useLogin = () => {
         password: password,
       })
       localStorage.setItem('token', res.data.token)
+      router.push('/device/list')
     } catch (err) {
       console.log(err)
     }

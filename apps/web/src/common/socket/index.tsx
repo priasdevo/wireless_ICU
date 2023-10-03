@@ -16,6 +16,10 @@ export const SocketProvider = ({ children, socket }: ISocketProvider) => {
     if (typeof window !== 'undefined') {
       if (router.pathname !== '/login' && router.pathname !== '/register') {
         setLoading(true)
+        if (!localStorage.getItem('token')) {
+          router.push('/login')
+          setLoading(false)
+        }
       }
       console.log('prias true')
       socket.emit('authenticate', { token: localStorage.getItem('token') })
@@ -24,7 +28,7 @@ export const SocketProvider = ({ children, socket }: ISocketProvider) => {
 
       socket.on('authen_success', () => {
         console.log('prias false')
-        setLoading(false);
+        setLoading(false)
         // other logic
       })
 
