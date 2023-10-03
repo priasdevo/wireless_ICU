@@ -20,7 +20,7 @@ const NotificationsPage: React.FC = () => {
           <Typography
             variant="h5"
             color="#d56f2c"
-            style={{ marginRight: '30px' }}
+            style={{ marginRight: '180px' }}
           >
             Time
           </Typography>
@@ -53,11 +53,13 @@ const NotificationsPage: React.FC = () => {
                       {' '}
                       {notification.timestamp.toLocaleString()}
                     </Typography>
-                    <Button onClick={() => {
-                  router.push(`/notification/${notification._id}`)
-                }}>
-                Join 
-              </Button>
+                    <Button
+                      onClick={() => {
+                        router.push(`/notification/${notification._id}`)
+                      }}
+                    >
+                      Join
+                    </Button>
                   </div>
                 </li>
               </CardContainer>

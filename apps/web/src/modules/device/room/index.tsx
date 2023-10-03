@@ -1,6 +1,8 @@
 import { useSocket } from '@/common/socket'
 import React, { useRef, useEffect, useState } from 'react'
 import useStreamRoom from './hooks/useStreamRoom'
+import { Typography } from '@mui/material'
+import { CardContainer, Input, Label } from './styled'
 
 const VideoStreamPage: React.FC = () => {
   const { socket } = useSocket()
@@ -49,10 +51,10 @@ const VideoStreamPage: React.FC = () => {
   }, [id])
 
   return (
-    <div>
-      <img src={imageUrl} alt="Video Stream" />
-      <div>
-        <input
+    <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap: '40px'}}>
+      <img src={imageUrl} alt="Video Stream" style={{marginTop:'100px', marginBottom:'50px'}}/>
+      <div style={{display:'flex', flexDirection:'row'}}>
+        <Input 
           type="radio"
           id="isHome"
           name="homeStatus"
@@ -60,9 +62,9 @@ const VideoStreamPage: React.FC = () => {
           checked={homeStatus === 'isHome'}
           onChange={handleRadioChange}
         />
-        <label htmlFor="isHome">At Home</label>
+        <Label htmlFor="isHome">At Home</Label>
 
-        <input
+        <Input style={{marginLeft:'40px'}}
           type="radio"
           id="notIsHome"
           name="homeStatus"
@@ -70,15 +72,30 @@ const VideoStreamPage: React.FC = () => {
           checked={homeStatus === 'notHome'}
           onChange={handleRadioChange}
         />
-        <label htmlFor="notIsHome">not at Home</label>
+        <Label htmlFor="notIsHome">not at Home</Label>
       </div>
+      <Typography variant='h4' color = '#ed7c31' style = {{marginTop:'100px', marginBottom:'30px'}}>Notification of this device</Typography>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '270px' }}>
+          <Typography variant="h5" color="#ed7c31">
+            Video Link
+          </Typography>
+          <Typography
+            variant="h5"
+            color="#ed7c31"
+            style={{ marginRight: '20px' }}
+          >
+            Time
+          </Typography>
+        </div>
       {notifications &&
         notifications.map((notification: any) => {
           return (
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
-              <p>{notification.videoLink}</p>
-              <p>{notification.timestamp}</p>
+            <CardContainer>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '100px' }}>
+              <Typography variant="h6" color="#d56f2c">{notification.videoLink}</Typography>
+              <Typography variant="h6" color="#d56f2c">{notification.timestamp}</Typography>
             </div>
+            </CardContainer>
           )
         })}
     </div>
