@@ -27,3 +27,21 @@ export const Label = styled('label')`
   margin-bottom: 5px;
   color: #ed7c31;
 `
+
+export const Button = styled('button')`
+  width: max-content;
+  margin-top: 2px;
+  padding: 10px 20px;
+  background-color: #ed7c31;
+  font-size: 18px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f0965a;
+  }
+`

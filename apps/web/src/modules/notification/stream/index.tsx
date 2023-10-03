@@ -5,7 +5,7 @@ const VideoPlayer: React.FC = () => {
   const router = useRouter()
   const { id } = router.query
   return (
-    <div style = {{display:'flex', flexDirection: 'column', alignItems:'center', marginTop:'8rem'}}>
+    <div style = {{display:'flex', flexDirection: 'column', alignItems:'center', marginTop:'10rem'}}>
     <video controls width="800">
       {id && (
         <source
