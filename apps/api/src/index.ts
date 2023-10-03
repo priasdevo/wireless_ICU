@@ -25,11 +25,18 @@ const corsOptions = {
   credentials: true, // This will allow cookies to be included
 }
 
+const corsOptions2 = {
+  origin: ['http://192.168.43.119:3000', 'http://localhost:3000'], // Allow requests from any origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+  allowedHeaders: ['content-type'], // Include 'content-type' in the list
+  credentials: true, // This will allow cookies to be included
+}
+
 const PORT = process.env.PORT || 3000
 const app = express()
 
 app.use(express.json())
-app.use(cors(corsOptions))
+app.use(cors(corsOptions2))
 app.use(cookieParser())
 
 app.use('/auth', authRoutes)

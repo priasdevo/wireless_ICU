@@ -7,6 +7,10 @@ const notificationSchema = new mongoose.Schema({
     ref: 'Device', // This associates the Notification with a Device
     required: true,
   },
+  deviceCode: {
+    type: String,
+    required: true,
+  },
   videoLink: {
     type: String,
     required: true,

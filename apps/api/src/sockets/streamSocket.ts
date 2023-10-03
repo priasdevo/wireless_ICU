@@ -177,6 +177,7 @@ const streamSocket = (io: Server) => {
         const notification = new Notification({
           device: socket.decoded.deviceId,
           videoLink: videoLink,
+          deviceCode: socket.decoded.deviceCode,
         })
         const n_notification = await notification.save()
 
@@ -184,7 +185,7 @@ const streamSocket = (io: Server) => {
         notify(
           '1158414358938910741',
           socket.decoded.deviceCode,
-          `http://localhost:3000/notification/${n_notification._id}`,
+          `http://192.168.43.119:3000/notification/${n_notification._id}`,
         )
       }
     })
