@@ -14,6 +14,12 @@ router.get(
 )
 
 router.get(
+  '/single/:id',
+  authMiddleware,
+  notificationController.getNotificationById,
+)
+
+router.get(
   '/video/:id',
   authMiddleware,
   notificationController.getNotificationsVideo,

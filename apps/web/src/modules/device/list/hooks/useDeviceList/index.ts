@@ -1,6 +1,7 @@
 import { apiClient } from '@/common/axios/axiosInstance'
 import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { useSocket } from '@/common/socket'
 
 interface Device {
   macAddress: string
@@ -13,11 +14,13 @@ const useDeviceList = () => {
   const [error, setError] = useState<string | null>(null)
   const [deviceCode, setDeviceCode] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const { socket } = useSocket()
 
   const router = useRouter()
 
   useEffect(() => {
     fetchDevices()
+    socket.emit('authenticate', { token: localStorage.getItem('token') })
   }, [])
 
   const fetchDevices = useCallback(async () => {

@@ -11,6 +11,9 @@ export const SocketProvider = ({ children, socket }: ISocketProvider) => {
   const router = useRouter()
 
   const [loading, setLoading] = useState(false)
+  const [authen, setAuthen] = useState(false)
+
+  const pathName = router.pathname
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -29,6 +32,7 @@ export const SocketProvider = ({ children, socket }: ISocketProvider) => {
       socket.on('authen_success', () => {
         console.log('prias false')
         setLoading(false)
+        setAuthen(true)
         // other logic
       })
 

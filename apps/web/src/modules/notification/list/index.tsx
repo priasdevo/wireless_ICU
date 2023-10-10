@@ -36,7 +36,7 @@ const NotificationsPage: React.FC = () => {
                 }}
               >
                 <li
-                  key={notification.device}
+                  key={notification.deviceCode}
                   style={{ margin: '20px', listStyleType: 'none' }}
                 >
                   <div
@@ -47,7 +47,7 @@ const NotificationsPage: React.FC = () => {
                     }}
                   >
                     <Typography variant="h6" color="#fdf1ea">
-                      {notification.device}
+                      {notification.deviceCode}
                     </Typography>
                     <Typography variant="h6" color="#fdf1ea">
                       {' '}

@@ -65,6 +65,24 @@ export const getDeviceNotifications = async (req: Request, res: Response) => {
   }
 }
 
+export const getNotificationById = async (req: Request, res: Response) => {
+  try {
+    // Assuming device ID is passed in the URL as a parameter
+    const deviceId = req.params.id
+
+    const notifications = await Notification.findById(deviceId)
+
+    if (!notifications) {
+      return res.status(404).json({ message: 'Notifications not found!' })
+    }
+
+    return res.status(200).json(notifications)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: 'Server error!' })
+  }
+}
+
 export const getNotificationsVideo = async (req: Request, res: Response) => {
   try {
     console.log('???')
