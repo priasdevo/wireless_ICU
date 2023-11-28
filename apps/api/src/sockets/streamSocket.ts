@@ -176,7 +176,7 @@ const streamSocket = (io: Server) => {
         )
         const notification = new Notification({
           device: socket.decoded.deviceId,
-          videoLink: videoLink,
+          videoLink: './video/video_14.mp4',
           deviceCode: socket.decoded.deviceCode,
         })
         const n_notification = await notification.save()
